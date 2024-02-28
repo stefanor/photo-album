@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "photoswipe": "^5.3.8",
+    "photoswipe-dynamic-caption-plugin": "^1.2.7"
+  }
+}

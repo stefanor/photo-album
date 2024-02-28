@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TITLE</title>
+  <link rel="stylesheet" href="node_modules/photoswipe/dist/photoswipe.css">
+  <link rel="stylesheet" href="node_modules/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css">
+  <style type="text/css">
+    #gallery div.photos {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    #gallery img.thumb {
+      padding: 0.1rem;
+    }
+    .filename {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>TITLE</h1>
+  <p>Subtitle</p>
+  <div id="gallery">
+    <noscript>This gallery is implemented in Javascript. Turn it on!</noscript>
+  </div>
+<script type="module">
+import PhotoSwipeLightbox from './node_modules/photoswipe/dist/photoswipe-lightbox.esm.js';
+import PhotoSwipeDynamicCaption from './node_modules/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.esm.js';
+
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery',
+  children: 'a',
+  pswpModule: () => import('./node_modules/photoswipe/dist/photoswipe.esm.js')
+});
+
+const captionPlugin = new PhotoSwipeDynamicCaption(lightbox, {
+  type: 'auto',
+});
+
+const sizes = ['2048w', '1024w', '512w'];
+
+const gallery = document.getElementById("gallery");
+fetch("./photos/photos.json")
+  .then(response => response.json())
+  .then(photos => {
+  photos.sections.forEach(section => {
+    const section_container = document.createElement("section");
+    const h2 = document.createElement("h2");
+    h2.textContent = section.title;
+    section_container.appendChild(h2);
+
+    const photos_container = document.createElement("div");
+    photos_container.setAttribute("class", "photos");
+
+    section.photos.forEach(image => {
+      const srcset = [];
+      sizes.forEach(size => {
+        srcset.push("photos/" + size + "/" + image.file + " " + size);
+      });
+      const a = document.createElement("a")
+      a.setAttribute("href", "photos/" + sizes[0] + "/" + image.file);
+      const dimensions = image.max_d.split("x");
+      a.setAttribute("data-pswp-width", dimensions[0]);
+      a.setAttribute("data-pswp-height", dimensions[1]);
+      a.setAttribute("data-pswp-srcset", srcset.join(", "));
+      const img = document.createElement("img");
+      img.setAttribute("class", "thumb");
+      img.setAttribute("src", "photos/thumb/" + image.file);
+      a.appendChild(img);
+      const caption = document.createElement("span");
+      caption.setAttribute("class", "pswp-caption-content");
+      const h3 = document.createElement("h3");
+      h3.textContent = section.title;
+      caption.appendChild(h3);
+      if (image.title) {
+        const img_title = document.createElement("div");
+        img_title.textContent = image.title;
+        caption.appendChild(img_title);
+      }
+      const filename = document.createElement("div");
+      filename.setAttribute("class", "filename");
+      filename.textContent = image.file;
+      caption.appendChild(filename);
+      a.appendChild(caption);
+      photos_container.appendChild(a);
+    });
+    section_container.appendChild(photos_container);
+    gallery.appendChild(section_container);
+  });
+  lightbox.init();
+});
+
+</script>
+</body>
+</html>
