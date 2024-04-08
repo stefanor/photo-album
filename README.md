@@ -3,7 +3,7 @@ A photo album script
 
 ## Instructions:
 
-1. `apt install jpegoptim python3-pil python3-yaml npm`
+1. `apt install imagemagick jpegoptim python3-pil python3-yaml npm`
 1. Run `cd src && npm install` to download JS assets.
 1. Edit `index.html` to taste.
 1. Place photos into `src/photos/orig`.
