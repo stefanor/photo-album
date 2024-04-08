@@ -12,19 +12,19 @@ dirs:
 	mkdir -p 512w 1024w 2048w thumb
 
 2048w/%: orig/%
-	convert $^ -resize 2048x4096 $@
+	convert $^ -resize 2048x4096 -auto-orient $@
 	jpegoptim -s -m80 $@
 
 1024w/%: orig/%
-	convert $^ -resize 1024x2048 $@
+	convert $^ -resize 1024x2048 -auto-orient $@
 	jpegoptim -s -m80 $@
 
 512w/%: orig/%
-	convert $^ -resize 512x1024 $@
+	convert $^ -resize 512x1024 -auto-orient $@
 	jpegoptim -s -m80 $@
 
 thumb/%: orig/%
-	convert $^ -thumbnail 100x100 $@
+	convert $^ -thumbnail 100x100 -auto-orient $@
 	jpegoptim -s -m80 $@
 
 photos.json: photos.yml
